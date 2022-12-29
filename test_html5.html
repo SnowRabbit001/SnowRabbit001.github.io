@@ -1,0 +1,47 @@
+<!DOCTYPE html>  
+<!--Where this particular "API" falls short is the ability to do realtime effects 
+	(e.g. render live webcam data to a <canvas> and apply WebGL filters). 
+	HTML Media Capture only allows you to record a media file or take a 
+	snapshot in time.-->
+ <html>  
+   <head>   
+     <title>Demo HTML5 WebCam-phone</title>  
+     <meta charset="UTF-8">  
+     <script>
+     	const input1 = document.getElementById('customFileInput1');
+		input1.addEventListener('change', handleFilesImage, false);
+		const input2 = document.getElementById('customFileInput2');
+		input2.addEventListener('change', handleFilesImage, false);
+
+		function handleFilesImage() {
+		  const fileData = this.files;
+		  const reader = new FileReader();
+		  reader.addEventListener('load', file => {
+		    const img = document.getElementById('Im_image');
+		    img.src = file.target.result;
+		  });
+		  reader.readAsDataURL(fileData[0]);
+		}
+     </script>  
+   </head>
+
+   <body>  
+   	<section class="button-box">
+     	<!-- 開啟 前鏡頭 拍照 -->
+		<input id="customFileInput1" type="file" capture="user" accept="image/*" style="display:true">
+		<label for="customFileInput1">
+			<span>開啟前鏡頭拍照</span>
+		</label>
+	</section>
+	<section class="button-box">
+		<!-- 開啟 後鏡頭 拍照 -->
+		<input id="customFileInput2" type="file" capture="environment" accept="image/*" style="display:none">
+		<label for="customFileInput2">
+			<span>開啟後鏡頭拍照</span>
+		</label>
+	</section>
+	<div>
+		<img id="Im_image" style="height: 100px; width: 100px">
+	</div>
+   </body>  
+ </html>  

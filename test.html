@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+</head>
+
+<body>
+	<canvas id="canvas" width="134" height="90"></canvas>
+    <button id="gray">ToGray</button>
+    <canvas id="canvas_gray" width="134" height="90"></canvas>
+</body>
+
+<script>
+	var canvas = document.getElementById('canvas');//取得畫布物件
+	var canvas_gray = document.getElementById('canvas_gray');
+	var ctx = canvas.getContext("2d");//建立繪圖物件
+	var ctx_g = canvas_gray.getContext("2d");
+
+	window.onload = function () {
+		var img = new Image();//宣告新影像
+		//img.crossOrigin = 'anonymous';//圖片來源如果是跨域，載入時要設定此行
+		img.src = './barcode_1-2.png';//宣告影像檔名
+		
+		img.onload = function () {//載入影像後
+			//設定canvas尺寸
+	   		canvas.width = img.width;
+	   		canvas.height = img.height;
+			ctx.drawImage(img, 0, 0);//繪製影像到畫布
+		};
+	}
+
+	document.getElementById("gray").addEventListener("click", function() {
+		canvas_gray.width = canvas.width;
+	   	canvas_gray.height = canvas.height;
+		ctx_g.drawImage(canvas, 0, 0, canvas_gray.width, canvas_gray.height); //将获取圖片绘制在画布上
+        toGray();
+    });
+
+	function toGray() {
+		var imageData = ctx_g.getImageData(0, 0, canvas_gray.width, canvas_gray.height);//取出影像資料陣列
+		console.log('imageData: ' + imageData);
+		const imageBuffer = imageData.data;
+	    console.log('imageBuffer: ' + imageBuffer);
+
+		for(var i = 0; i<imageBuffer.length; i+=4) {
+			// 在imageBuffer之中每4個元素分別代表著每個像素的red, green, blue, alpha數值(0 ~ 255)
+	        red   = imageBuffer[i];
+	        green = imageBuffer[i + 1];
+	        blue  = imageBuffer[i + 2];
+	        alpha = imageBuffer[i + 3];
+	        // 將畫布中每個像素的rgb值設定為rgb平均值，能使圖片灰階化
+	        arg = (red + green + blue) / 3;
+	        imageBuffer[i] = arg ;
+	        imageBuffer[i + 1] = arg;
+	        imageBuffer[i + 2] = arg;
+	        imageBuffer[i + 3] = alpha;
+		}
+		ctx_g.putImageData(imageData, 0, 0);//繪製影像陣列到畫布上
+		document.body.appendChild(canvas_gray);
+	}
+</script>
+
+</html>
